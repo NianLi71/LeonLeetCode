@@ -1,0 +1,27 @@
+# Python 字节码缓存
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# 各类工具缓存
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+
+# macOS
+.DS_Store
+._*
+
+# Claude Code 的本机设置(含个人权限配置, 不适合提交)
+.claude/settings.local.json

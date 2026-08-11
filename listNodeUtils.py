@@ -15,9 +15,11 @@ def buildList(l):
 
 def printList(l):
     i = l
+    print('[ ', end='')
     while i:
         print(f'{i.val}', end=' ')
         i = i.next
+    print(']',end='')
     print()
 
 def reverseList(root):
