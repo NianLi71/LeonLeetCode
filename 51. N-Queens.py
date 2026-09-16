@@ -36,11 +36,14 @@ class Solution:
                 board = [['.'] * n for _ in range(n)] 
                 for q in r:
                     board[q[0]][q[1]] = 'Q'
+
                 for row in range(n):
-                    s = ''
-                    for col in range(n):
-                        s += board[row][col]
-                    board[row] = s
+                #     # s = ''
+                #     # for col in range(n):
+                #     #     s += board[row][col]
+                    board[row] = ''.join(board[row]) # 简洁版
+
+                # board = [ ''.join(board[row]) for row in range(n)] # 更简洁
                 finalRes.append(board)
             return finalRes
 
