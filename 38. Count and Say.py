@@ -31,7 +31,19 @@ class Solution:
         return s
 
 '''
-2019年版本
+2019年版本更直观
+while 循环可以更好的控制下标移动逻辑
+两层while循环巧妙的处理了最后两个数字一样后者不一样的情况
+* 比如结尾是 11:
+j = len - 2, cs[len - 2] == cs[len - 1], 内能循环后 j = len - 1, 
+(2,1)进next_cs
+接着外层j+=1后,j = len, 直接跳出外层while, 完成计算
+* 比如结尾数字不同 12:
+j = len - 2, cs[len - 2] != cs[len - 1], 内层循环不执行,
+(1,1)进next_cs
+外层j+=1后, j = len - 1,内层循环不执行,
+(1,2)进next_cs
+j+=1后, 调出外层while,计算结束
 '''
 class Solution2019:
     def countAndSay(self, n: int) -> str:
