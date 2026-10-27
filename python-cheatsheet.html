@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Python 刷题速查</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: 左侧粘性目录 + 右侧按数据结构分节；每节 = 类型名标题 + 复杂度条 + 双列代码片段 */
+:root{
+  --bg:#F3F6F5; --surface:#FFFFFF; --ink:#17201D; --muted:#5A6763; --line:#D9E1DE;
+  --accent:#0B7A68; --accent-soft:#DCEEE9;
+  --code-bg:#E8EEEC; --code-ink:#1D2724;
+  --t-k:#8A3FB0; --t-s:#9A5B00; --t-n:#1F5FBF; --t-c:#76847F; --t-b:#0B7A68; --t-m:#2F6694;
+  --o1:#1E8A4C; --olog:#2367B5; --on:#B26A00; --onlog:#C2410C;
+  --bad:#C23B3B; --good:#1E8A4C;
+  --f-mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", monospace;
+  --f-body:-apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101513; --surface:#161C1A; --ink:#E2EAE7; --muted:#93A29D; --line:#28322F;
+    --accent:#4CC7AE; --accent-soft:#16302A;
+    --code-bg:#19211E; --code-ink:#D8E2DE;
+    --t-k:#D19AF0; --t-s:#E8B86A; --t-n:#86B5F5; --t-c:#6E7D78; --t-b:#4CC7AE; --t-m:#8EC3E6;
+    --o1:#5BD08A; --olog:#7EB0F2; --on:#E8B05A; --onlog:#F08A5B;
+    --bad:#F07A7A; --good:#5BD08A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101513; --surface:#161C1A; --ink:#E2EAE7; --muted:#93A29D; --line:#28322F;
+  --accent:#4CC7AE; --accent-soft:#16302A;
+  --code-bg:#19211E; --code-ink:#D8E2DE;
+  --t-k:#D19AF0; --t-s:#E8B86A; --t-n:#86B5F5; --t-c:#6E7D78; --t-b:#4CC7AE; --t-m:#8EC3E6;
+  --o1:#5BD08A; --olog:#7EB0F2; --on:#E8B05A; --onlog:#F08A5B;
+  --bad:#F07A7A; --good:#5BD08A;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+
+.wrap{max-width:1200px;margin-inline:auto;padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}
+
+/* ---------- header ---------- */
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{padding-block:44px 28px;display:grid;gap:14px}
+.eyebrow{margin:0;font-family:var(--f-mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{margin:0;font-family:var(--f-mono);font-weight:800;font-size:clamp(30px,4.6vw,46px);line-height:1.15;letter-spacing:-.015em;text-wrap:balance}
+.lede{margin:0;color:var(--muted);max-width:64ch}
+.tools-row{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;margin-top:6px}
+.search{position:relative;width:min(100%,440px)}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted);pointer-events:none}
+.search input{width:100%;font:500 14px/1.4 var(--f-mono);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 40px 10px 36px;outline:none}
+.search input::placeholder{color:var(--muted);opacity:.8}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.search kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:500 11px var(--f-mono);color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px;background:var(--bg)}
+.tip{margin:0;font-size:13px;color:var(--muted);max-width:60ch}
+.tip b{color:var(--ink);font-weight:600}
+
+/* ---------- layout ---------- */
+.layout{display:grid;grid-template-columns:150px minmax(0,1fr);gap:48px;padding-block:36px 96px}
+.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;display:flex;flex-direction:column;gap:2px}
+.toc a{font-family:var(--f-mono);font-size:13.5px;color:var(--muted);text-decoration:none;padding:5px 10px;border-radius:6px;white-space:nowrap}
+.toc a:hover{color:var(--ink);background:var(--code-bg)}
+.toc a.on{color:var(--accent);background:var(--accent-soft);font-weight:700}
+.toc a.off{opacity:.35}
+.toc a:focus-visible,.recipe a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{display:grid;gap:72px;min-width:0}
+
+/* ---------- sections ---------- */
+.ds{display:grid;gap:22px;scroll-margin-top:24px;min-width:0}
+.ds-head{display:grid;gap:10px}
+.ds h2{margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;text-wrap:balance}
+.ds-name{font-family:var(--f-mono);font-weight:800;font-size:clamp(26px,3.4vw,34px);line-height:1.1;letter-spacing:-.01em}
+.ds-cn{font-size:14.5px;font-weight:500;color:var(--muted)}
+.ds-use{margin:0;color:var(--muted);max-width:70ch}
+
+.cx{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.cx li{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:12.5px;padding:3px 4px 3px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.o{display:inline-block;font-family:var(--f-mono);font-weight:700;font-size:12px;line-height:1.5;padding:0 8px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.o1{color:var(--o1);background:color-mix(in srgb,var(--o1) 14%,transparent)}
+.olog{color:var(--olog);background:color-mix(in srgb,var(--olog) 14%,transparent)}
+.on{color:var(--on);background:color-mix(in srgb,var(--on) 15%,transparent)}
+.onlog{color:var(--onlog);background:color-mix(in srgb,var(--onlog) 14%,transparent)}
+
+/* ---------- recipes ---------- */
+.recipes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:30px 28px}
+.recipe{min-width:0;display:grid;gap:8px;align-content:start}
+.recipe.wide{grid-column:1 / -1}
+.recipe h3{margin:0;font-size:14.5px;font-weight:650;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.lc{font-family:var(--f-mono);font-size:11.5px;font-weight:500;color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 38%,transparent);border-radius:4px;padding:0 6px;line-height:1.6}
+pre{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:8px;padding:13px 16px;overflow-x:auto;font-family:var(--f-mono);font-size:13px;line-height:1.7;tab-size:4;font-variant-ligatures:none}
+pre code{font:inherit}
+.note{margin:0;font-size:13.5px;color:var(--muted);max-width:68ch}
+.note code,.ds-use code,.tip code,td code{font-family:var(--f-mono);font-size:.9em;background:var(--code-bg);color:var(--code-ink);padding:1px 5px;border-radius:4px}
+
+.t-k{color:var(--t-k)}
+.t-s{color:var(--t-s)}
+.t-n{color:var(--t-n)}
+.t-c{color:var(--t-c);font-style:italic}
+.t-b{color:var(--t-b)}
+.t-m{color:var(--t-m)}
+
+/* ---------- complexity tables ---------- */
+.tables{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:20px;align-items:start}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th{text-align:left;font-family:var(--f-mono);font-size:12px;font-weight:700;color:var(--muted);padding:10px 14px;background:var(--code-bg);white-space:nowrap}
+td{padding:9px 14px;border-top:1px solid var(--line);vertical-align:middle;font-size:14px}
+td:first-child{white-space:nowrap}
+td .sub{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.dash{color:var(--muted)}
+
+/* ---------- pitfalls ---------- */
+.pits{grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))}
+.verdict{font-family:var(--f-mono);font-size:12px;font-weight:700;margin:2px 0 -4px}
+.verdict.bad{color:var(--bad)}
+.verdict.good{color:var(--good)}
+pre.bad{background:color-mix(in srgb,var(--bad) 8%,var(--code-bg))}
+pre.good{background:color-mix(in srgb,var(--good) 8%,var(--code-bg))}
+
+#empty{margin:0;padding:28px;border:1px dashed var(--line);border-radius:10px;color:var(--muted);text-align:center}
+
+/* ---------- narrow ---------- */
+@media (max-width: 880px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:28px;padding-top:0}
+  .toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;flex-direction:row;overflow-x:auto;scrollbar-width:none;background:var(--bg);border-bottom:1px solid var(--line);
+    margin-left:calc(-1 * max(16px, env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px, env(safe-area-inset-right,0px)));
+    padding:10px max(16px, env(safe-area-inset-right,0px)) 10px max(16px, env(safe-area-inset-left,0px))}
+  .toc::-webkit-scrollbar{display:none}
+  .ds{scroll-margin-top:72px}
+  .tables{grid-template-columns:minmax(0,1fr)}
+  .top .wrap{padding-block:32px 24px}
+}
+@media (max-width: 480px){
+  pre{font-size:12.5px;padding:12px 14px}
+  main{gap:56px}
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Python 3 · LeetCode</p>
+    <h1>Python 刷题速查</h1>
+    <p class="lede">list、str、dict、set、deque、heapq、bisect 的常用写法。每个操作都标了时间复杂度，经典套路附上了 LeetCode 题号，可以对着练。</p>
+    <div class="tools-row">
+      <label class="search" for="q">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"></circle><path d="M11 11l3.5 3.5" stroke-linecap="round"></path></svg>
+        <input id="q" type="search" placeholder="搜索：sort、popleft、Counter…" autocomplete="off" spellcheck="false" aria-label="搜索方法或关键词">
+        <kbd>/</kbd>
+      </label>
+      <p class="tip">LeetCode 的 Python3 环境已预先导入 <b>collections、heapq、bisect、math</b> 等模块，提交时不写 import 也能跑；本地调试记得自己补上。</p>
+    </div>
+  </div>
+</header>
+
+<div class="layout wrap">
+  <nav class="toc" aria-label="目录">
+    <a href="#complexity">复杂度</a>
+    <a href="#list">list</a>
+    <a href="#str">str</a>
+    <a href="#dict">dict</a>
+    <a href="#set">set</a>
+    <a href="#deque">deque</a>
+    <a href="#heapq">heapq</a>
+    <a href="#bisect">bisect</a>
+    <a href="#tools">工具函数</a>
+    <a href="#templates">解题模板</a>
+    <a href="#pitfalls">常见坑</a>
+  </nav>
+
+  <main>
+    <p id="empty" hidden></p>
+
+    <!-- ================= 复杂度 ================= -->
+    <section class="ds" id="complexity">
+      <div class="ds-head">
+        <h2><span class="ds-name">复杂度速查</span><span class="ds-cn">选容器之前先看这张表</span></h2>
+        <p class="ds-use">同一个操作，换个容器可能从 O(n) 变成 O(1)。超时的时候，先检查是不是在 list 上做了 <code>x in a</code> 或 <code>pop(0)</code>。</p>
+      </div>
+      <div class="tables">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>操作</th><th>list</th><th>deque</th><th>dict / set</th></tr></thead>
+            <tbody>
+              <tr><td>按下标取 <code>a[i]</code></td><td><span class="o o1">O(1)</span></td><td><span class="o o1">O(1)</span><span class="sub">两端；中间是 O(n)</span></td><td class="dash">—</td></tr>
+              <tr><td>尾部增删 <code>append</code> <code>pop()</code></td><td><span class="o o1">O(1)</span></td><td><span class="o o1">O(1)</span></td><td class="dash">—</td></tr>
+              <tr><td>头部增删 <code>pop(0)</code> <code>popleft()</code></td><td><span class="o on">O(n)</span></td><td><span class="o o1">O(1)</span></td><td class="dash">—</td></tr>
+              <tr><td>查找 <code>x in c</code></td><td><span class="o on">O(n)</span></td><td><span class="o on">O(n)</span></td><td><span class="o o1">O(1)</span></td></tr>
+              <tr><td>按值删除 <code>remove(x)</code></td><td><span class="o on">O(n)</span></td><td><span class="o on">O(n)</span></td><td><span class="o o1">O(1)</span></td></tr>
+              <tr><td>排序 <code>sort()</code></td><td><span class="o onlog">O(n log n)</span></td><td class="dash">—</td><td class="dash">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>其他操作</th><th>复杂度</th></tr></thead>
+            <tbody>
+              <tr><td><code>heappush</code> / <code>heappop</code></td><td><span class="o olog">O(log n)</span></td></tr>
+              <tr><td>看堆顶 <code>h[0]</code></td><td><span class="o o1">O(1)</span></td></tr>
+              <tr><td><code>heapify(a)</code></td><td><span class="o on">O(n)</span></td></tr>
+              <tr><td><code>bisect_left</code> 查找</td><td><span class="o olog">O(log n)</span></td></tr>
+              <tr><td><code>insort</code> 插入</td><td><span class="o on">O(n)</span></td></tr>
+              <tr><td><code>"".join(parts)</code></td><td><span class="o on">O(n)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= list ================= -->
+    <section class="ds" id="list">
+      <div class="ds-head">
+        <h2><span class="ds-name">list</span><span class="ds-cn">列表 · 也当栈用</span></h2>
+        <p class="ds-use">最常用的容器。尾部增删很快，头部增删很慢，需要从头部弹出时换成 deque。</p>
+        <ul class="cx">
+          <li><code>a[i]</code><span class="o o1">O(1)</span></li>
+          <li><code>append / pop()</code><span class="o o1">O(1)</span></li>
+          <li><code>insert(0, x) / pop(0)</code><span class="o on">O(n)</span></li>
+          <li><code>x in a</code><span class="o on">O(n)</span></li>
+          <li><code>sort()</code><span class="o onlog">O(n log n)</span></li>
+        </ul>
+      </div>
+      <div class="recipes">
+        <article class="recipe">
+          <h3>创建</h3>
+          <pre><code>a = [0] * n                # 长度 n，全是 0
+a = list(range(5))         # [0, 1, 2, 3, 4]
+a = list("abc")            # ['a', 'b', 'c']
+grid = [[0] * n for _ in range(m)]   # m 行 n 列</code></pre>
+          <p class="note">二维数组不要写成 <code>[[0] * n] * m</code>，那样每一行是同一个列表，改一格整列都变。</p>
+        </article>
+        <article class="recipe">
+          <h3>增删</h3>
+          <pre><code>a.append(x)        # 末尾添加
+a.extend([4, 5])   # 接上另一个列表，同 a += [4, 5]
+a.insert(i, x)     # 在下标 i 处插入，O(n)
+a.pop()            # 删除并返回最后一个
+a.pop(i)           # 删除并返回下标 i，O(n)
+a.remove(x)        # 删除第一个 x，不存在会报错
+del a[i]           # 按下标删除</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>查找与统计</h3>
+          <pre><code>x in a             # O(n)，频繁查找就转成 set
+a.index(x)         # 第一个 x 的下标，不存在会报错
+a.count(x)         # x 出现的次数
+len(a), sum(a), max(a), min(a)
+max(words, key=len)    # 最长的单词</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>切片（左闭右开）</h3>
+          <pre><code>a[-1], a[-2]       # 倒数第 1、2 个
+a[1:3]             # 下标 1、2
+a[:k]              # 前 k 个
+a[k:]              # 从下标 k 到结尾
+a[::-1]            # 反转后的新列表
+b = a[:]           # 浅拷贝，同 a.copy()
+a[:] = b           # 原地替换内容</code></pre>
+          <p class="note">题目要求“原地修改、不返回”时，用 <code>nums[:] = ...</code>，直接写 <code>nums = ...</code> 只是改了局部变量。</p>
+        </article>
+        <article class="recipe">
+          <h3>排序</h3>
+          <pre><code>a.sort()                # 原地升序，返回 None
+a.sort(reverse=True)    # 原地降序
+b = sorted(a)           # 返回新列表，a 不变
+words.sort(key=len)     # 按长度排
+pairs.sort(key=lambda p: p[1])           # 按第 2 项
+pairs.sort(key=lambda p: (-p[0], p[1]))  # 先降后升</code></pre>
+          <p class="note">排序是稳定的：key 相同的元素保持原来的先后顺序。</p>
+        </article>
+        <article class="recipe">
+          <h3>遍历</h3>
+          <pre><code>for i, x in enumerate(a): ...     # 下标 + 值
+for x, y in zip(a, b): ...        # 同时遍历，按短的停
+for i in range(n - 1, -1, -1): ...  # 倒序下标
+for x in reversed(a): ...         # 倒序取值
+for i in range(0, n, 2): ...      # 步长为 2</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>推导式与 any / all</h3>
+          <pre><code>sq = [x * x for x in a]
+evens = [x for x in a if x % 2 == 0]
+flat = [x for row in grid for x in row]   # 二维展平
+cols = list(zip(*grid))      # 矩阵转置（每列是 tuple）
+any(x &lt; 0 for x in a)        # 至少一个满足
+all(x &gt; 0 for x in a)        # 全部满足</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>当栈用 <span class="lc">LC 20 有效的括号</span></h3>
+          <pre><code>stack = []
+stack.append(x)    # 入栈
+stack[-1]          # 看栈顶
+stack.pop()        # 出栈
+if stack: ...      # 非空判断，空列表为假</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= str ================= -->
+    <section class="ds" id="str">
+      <div class="ds-head">
+        <h2><span class="ds-name">str</span><span class="ds-cn">字符串 · 不可变</span></h2>
+        <p class="ds-use">不能原地修改。要改字符时先转成 list，改完再 <code>"".join()</code> 回来。</p>
+        <ul class="cx">
+          <li><code>s[i]</code><span class="o o1">O(1)</span></li>
+          <li><code>len(s)</code><span class="o o1">O(1)</span></li>
+          <li><code>sub in s</code><span class="o on">O(n)</span></li>
+          <li><code>"".join(parts)</code><span class="o on">O(n)</span></li>
+        </ul>
+      </div>
+      <div class="recipes">
+        <article class="recipe">
+          <h3>修改字符：转 list 再 join</h3>
+          <pre><code>s = "hello"
+# s[0] = "H"            ✗ TypeError
+chars = list(s)
+chars[0] = "H"
+s = "".join(chars)      # "Hello"</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>常用方法</h3>
+          <pre><code>s.split()            # 按空白切分，连续空格也没事
+s.split(",")         # 按逗号切分
+" ".join(words)      # 用空格把列表拼起来
+s.strip()            # 去两端空白（lstrip / rstrip）
+s.lower(), s.upper()
+s.replace("a", "b")
+s.find("ab")         # 下标，找不到返回 -1
+s.startswith("ab"), s.endswith("z")
+s.count("a")
+s[::-1]              # 反转</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>字符判断与编码 <span class="lc">LC 125 验证回文串</span></h3>
+          <pre><code>c.isdigit()           # 是否 '0'~'9'
+c.isalpha()           # 是否字母
+c.isalnum()           # 字母或数字
+ord("a"), chr(97)     # 97, 'a'
+ord(c) - ord("a")     # 'a'~'z' 映射到 0~25
+int("42"), str(42)
+int("1010", 2)        # 二进制串转整数 → 10
+bin(10)[2:]           # '1010'</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>拼接用 join</h3>
+          <pre><code>res = []
+for c in s:
+    res.append(c)     # 循环里 ans += c 会反复复制
+ans = "".join(res)
+
+f"{name}: {score}"    # f-string 格式化
+"ab" * 3              # 'ababab'</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>比较与排序</h3>
+          <pre><code>"apple" &lt; "banana"    # 按字典序比较
+sorted("cba")         # ['a', 'b', 'c']
+"".join(sorted(s))    # 排好序的字符串，判断异位词
+
+import string
+string.ascii_lowercase    # 'abcdefghijklmnopqrstuvwxyz'
+string.digits             # '0123456789'</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= dict ================= -->
+    <section class="ds" id="dict">
+      <div class="ds-head">
+        <h2><span class="ds-name">dict</span><span class="ds-cn">字典 · 哈希表</span></h2>
+        <p class="ds-use">用空间换时间的主力：计数、记下标、分组、建图。键必须可哈希（数字、字符串、tuple 可以，list 不行）。Python 3.7 起保持插入顺序。</p>
+        <ul class="cx">
+          <li><code>d[k]</code><span class="o o1">O(1)</span></li>
+          <li><code>k in d</code><span class="o o1">O(1)</span></li>
+          <li><code>d[k] = v</code><span class="o o1">O(1)</span></li>
+          <li><code>del d[k]</code><span class="o o1">O(1)</span></li>
+        </ul>
+      </div>
+      <div class="recipes">
+        <article class="recipe">
+          <h3>基本操作</h3>
+          <pre><code>d = {}                  # 或 dict()
+d["a"] = 1
+d["a"]                  # 键不存在会 KeyError
+d.get("b", 0)           # 不存在时返回 0
+"a" in d                # 判断键是否存在
+d.pop("a", None)        # 删除，不存在也不报错
+del d["a"]              # 删除，不存在会报错</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>遍历</h3>
+          <pre><code>for k in d: ...
+for k, v in d.items(): ...
+for v in d.values(): ...
+for k in list(d): ...   # 遍历中要删键时，先拷贝一份键
+    del d[k]</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>计数：Counter <span class="lc">LC 242 有效的字母异位词</span></h3>
+          <pre><code>cnt = {}                       # 手写版
+for x in nums:
+    cnt[x] = cnt.get(x, 0) + 1
+
+from collections import Counter
+cnt = Counter(nums)            # {元素: 次数}
+cnt["z"]                       # 不存在返回 0，不报错
+cnt[x] += 1                    # 直接加
+cnt.most_common(2)             # [(元素, 次数), ...] 最多的 2 个
+Counter(s) == Counter(t)       # 判断异位词</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>分组 / 建图：defaultdict <span class="lc">LC 49 字母异位词分组</span></h3>
+          <pre><code>from collections import defaultdict
+groups = defaultdict(list)     # 缺省值是 []
+for w in strs:
+    key = "".join(sorted(w))
+    groups[key].append(w)      # 不用先判断键在不在
+list(groups.values())
+
+graph = defaultdict(list)      # 邻接表
+for u, v in edges:
+    graph[u].append(v)
+    graph[v].append(u)
+# 另有 defaultdict(int) 计数、defaultdict(set) 去重</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>按值排序、取最值</h3>
+          <pre><code>sorted(d)                         # 排好序的键
+sorted(d.items(), key=lambda kv: kv[1])  # 按值升序
+sorted(d, key=d.get, reverse=True)  # 按值降序的键
+max(d, key=d.get)                 # 值最大的那个键
+{v: k for k, v in d.items()}      # 键值互换
+
+# LC 347 前 K 个高频元素
+[x for x, _ in Counter(nums).most_common(k)]</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>边遍历边查表 <span class="lc">LC 1 两数之和</span></h3>
+          <pre><code>seen = {}                     # 值 → 下标
+for i, x in enumerate(nums):
+    if target - x in seen:
+        return [seen[target - x], i]
+    seen[x] = i</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>什么能当键</h3>
+          <pre><code>d[(r, c)] = 1           # 坐标用 tuple
+d[tuple(path)] = 1      # list 要先转成 tuple
+# d[[1, 2]] = 1         ✗ TypeError: unhashable type</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= set ================= -->
+    <section class="ds" id="set">
+      <div class="ds-head">
+        <h2><span class="ds-name">set</span><span class="ds-cn">集合</span></h2>
+        <p class="ds-use">去重，以及 O(1) 判断“这个值出现过没有”。元素同样要求可哈希。</p>
+        <ul class="cx">
+          <li><code>add</code><span class="o o1">O(1)</span></li>
+          <li><code>x in s</code><span class="o o1">O(1)</span></li>
+          <li><code>discard</code><span class="o o1">O(1)</span></li>
+          <li><code>a &amp; b</code><span class="o on">O(min(m, n))</span></li>
+        </ul>
+      </div>
+      <div class="recipes">
+        <article class="recipe">
+          <h3>基本操作</h3>
+          <pre><code>s = set()            # 注意：{} 是空字典
+s = {1, 2, 3}
+s = set(nums)        # 去重
+s.add(x)
+s.remove(x)          # 不存在会报错
+s.discard(x)         # 不存在也不报错
+x in s               # O(1)</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>集合运算 <span class="lc">LC 349 两个数组的交集</span></h3>
+          <pre><code>a | b      # 并集
+a &amp; b      # 交集
+a - b      # 差集：在 a 里但不在 b 里
+a ^ b      # 只在其中一个里
+a &lt;= b     # a 是否为 b 的子集</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>常见用法 <span class="lc">LC 217 存在重复元素</span></h3>
+          <pre><code>len(set(nums)) &lt; len(nums)   # 有重复
+visited = set()              # 搜索时记录走过的点
+visited.add((r, c))
+sorted(set(nums))            # 去重并排序
+frozenset(s)                 # 不可变集合，能当 dict 的键</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>只从起点往后数 <span class="lc">LC 128 最长连续序列</span></h3>
+          <pre><code>s = set(nums)
+best = 0
+for x in s:
+    if x - 1 not in s:        # x 是一段的起点
+        y = x
+        while y + 1 in s:
+            y += 1
+        best = max(best, y - x + 1)</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= deque ================= -->
+    <section class="ds" id="deque">
+      <div class="ds-head">
+        <h2><span class="ds-name">deque</span><span class="ds-cn">双端队列 · from collections</span></h2>
+        <p class="ds-use">两端增删都是 O(1)。BFS 的队列、滑动窗口的单调队列都用它。</p>
+        <ul class="cx">
+          <li><code>append / pop</code><span class="o o1">O(1)</span></li>
+          <li><code>appendleft / popleft</code><span class="o o1">O(1)</span></li>
+          <li><code>q[0] / q[-1]</code><span class="o o1">O(1)</span></li>
+          <li><code>q[i]</code> 中间<span class="o on">O(n)</span></li>
+        </ul>
+      </div>
+      <div class="recipes">
+        <article class="recipe">
+          <h3>基本操作</h3>
+          <pre><code>from collections import deque
+q = deque()
+q = deque([1, 2, 3])
+q.append(x)        # 右端入
+q.appendleft(x)    # 左端入
+q.pop()            # 右端出
+q.popleft()        # 左端出，O(1)；list.pop(0) 是 O(n)
+q[0], q[-1]        # 看两端
+deque(maxlen=3)    # 定长，满了自动挤掉另一端的元素</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>BFS 层序遍历 <span class="lc">LC 102 二叉树的层序遍历</span></h3>
+          <pre><code>if not root:
+    return []
+res, q = [], deque([root])
+while q:
+    level = []
+    for _ in range(len(q)):     # 当前这一层的节点数
+        node = q.popleft()
+        level.append(node.val)
+        if node.left:
+            q.append(node.left)
+        if node.right:
+            q.append(node.right)
+    res.append(level)
+return res</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>网格 BFS <span class="lc">LC 200 岛屿数量</span></h3>
+          <pre><code>q = deque([(sr, sc)])
+seen = {(sr, sc)}
+while q:
+    r, c = q.popleft()
+    for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        nr, nc = r + dr, c + dc
+        if (0 &lt;= nr &lt; m and 0 &lt;= nc &lt; n
+                and grid[nr][nc] == "1"
+                and (nr, nc) not in seen):
+            seen.add((nr, nc))
+            q.append((nr, nc))</code></pre>
+          <p class="note">入队时就标记 <code>seen</code>，不要等出队再标记，否则同一个格子会被重复入队。</p>
+        </article>
+        <article class="recipe">
+          <h3>单调队列 <span class="lc">LC 239 滑动窗口最大值</span></h3>
+          <pre><code>q = deque()                 # 存下标，对应的值从大到小
+res = []
+for i, x in enumerate(nums):
+    while q and nums[q[-1]] &lt;= x:
+        q.pop()             # 比 x 小的不可能再当最大值
+    q.append(i)
+    if q[0] &lt;= i - k:       # 队头已经滑出窗口
+        q.popleft()
+    if i &gt;= k - 1:
+        res.append(nums[q[0]])</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= heapq ================= -->
+    <section class="ds" id="heapq">
+      <div class="ds-head">
+        <h2><span class="ds-name">heapq</span><span class="ds-cn">堆 · 作用在普通 list 上</span></h2>
+        <p class="ds-use">反复取最小值、Top K、合并有序序列、Dijkstra。默认是最小堆，要最大堆就把值取负。</p>
+        <ul class="cx">
+          <li><code>heappush</code><span class="o olog">O(log n)</span></li>
+          <li><code>heappop</code><span class="o olog">O(log n)</span></li>
+          <li><code>h[0]</code><span class="o o1">O(1)</span></li>
+          <li><code>heapify</code><span class="o on">O(n)</span></li>
+        </ul>
+      </div>
+      <div class="recipes">
+        <article class="recipe">
+          <h3>最小堆</h3>
+          <pre><code>import heapq
+h = []
+heapq.heappush(h, x)
+heapq.heappop(h)          # 弹出并返回最小值
+h[0]                      # 看最小值，不弹出
+heapq.heapify(nums)       # 把现有 list 原地变成堆，O(n)
+heapq.heappushpop(h, x)   # 先 push 再 pop，比分开写快
+heapq.nlargest(3, nums)   # 前 3 大；nsmallest 同理</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>最大堆：存相反数</h3>
+          <pre><code>h = []
+for x in nums:
+    heapq.heappush(h, -x)
+biggest = -heapq.heappop(h)   # 取出来再取负
+-h[0]                         # 看最大值</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>第 K 大：大小为 k 的最小堆 <span class="lc">LC 215 数组中的第K个最大元素</span></h3>
+          <pre><code>h = []
+for x in nums:
+    heapq.heappush(h, x)
+    if len(h) &gt; k:
+        heapq.heappop(h)      # 踢掉最小的
+return h[0]                   # 堆里剩前 k 大，堆顶就是第 k 大</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>堆里放 tuple <span class="lc">LC 23 合并K个升序链表</span></h3>
+          <pre><code># tuple 先比第 1 项，相同再比第 2 项……
+# ListNode 不能比较，所以中间插一个下标 i 兜底
+h = []
+for i, node in enumerate(lists):
+    if node:
+        heapq.heappush(h, (node.val, i, node))
+dummy = tail = ListNode()
+while h:
+    _, i, node = heapq.heappop(h)
+    tail.next = node
+    tail = node
+    if node.next:
+        heapq.heappush(h, (node.next.val, i, node.next))
+return dummy.next</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= bisect ================= -->
+    <section class="ds" id="bisect">
+      <div class="ds-head">
+        <h2><span class="ds-name">bisect</span><span class="ds-cn">二分查找 · 作用在有序 list 上</span></h2>
+        <p class="ds-use">在有序数组里找插入位置。面试常要求手写二分，模板也放在这里。</p>
+        <ul class="cx">
+          <li><code>bisect_left / bisect_right</code><span class="o olog">O(log n)</span></li>
+          <li><code>insort</code><span class="o on">O(n)</span></li>
+        </ul>
+      </div>
+      <div class="recipes">
+        <article class="recipe">
+          <h3>bisect 模块</h3>
+          <pre><code>import bisect
+a = [1, 2, 2, 2, 5]          # 必须有序
+bisect.bisect_left(a, 2)     # 1：第一个 &gt;= 2 的位置
+bisect.bisect_right(a, 2)    # 4：第一个 &gt; 2 的位置
+bisect.insort(a, 3)          # 插入并保持有序
+
+i = bisect.bisect_left(a, x)
+found = i &lt; len(a) and a[i] == x    # 判断 x 是否存在</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>手写：找某个值 <span class="lc">LC 704 二分查找</span></h3>
+          <pre><code>lo, hi = 0, len(nums) - 1     # 闭区间 [lo, hi]
+while lo &lt;= hi:
+    mid = (lo + hi) // 2
+    if nums[mid] == target:
+        return mid
+    if nums[mid] &lt; target:
+        lo = mid + 1
+    else:
+        hi = mid - 1
+return -1</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>手写：找左边界 <span class="lc">LC 35 搜索插入位置</span></h3>
+          <pre><code>lo, hi = 0, len(nums)         # 左闭右开 [lo, hi)
+while lo &lt; hi:
+    mid = (lo + hi) // 2
+    if nums[mid] &lt; target:
+        lo = mid + 1
+    else:
+        hi = mid
+return lo                     # 第一个 &gt;= target 的位置</code></pre>
+          <p class="note">结果和 <code>bisect_left</code> 一样。“找第一个满足条件的位置”的题都能套这个写法。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= tools ================= -->
+    <section class="ds" id="tools">
+      <div class="ds-head">
+        <h2><span class="ds-name">工具函数</span><span class="ds-cn">数字 · math · itertools · functools</span></h2>
+        <p class="ds-use">不是数据结构，但刷题时天天用。</p>
+      </div>
+      <div class="recipes">
+        <article class="recipe">
+          <h3>数字运算</h3>
+          <pre><code>INF = float("inf")        # 求最小值时的初始值
+7 // 2, 7 % 2             # 3, 1
+-7 // 2                   # -4：向下取整！
+int(-7 / 2)               # -3：向零取整
+divmod(17, 5)             # (3, 2)
+2 ** 10                   # 1024
+pow(2, 10, 1000)          # 24，快速幂取模
+MOD = 10**9 + 7           # 题目常见的取模数</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>math</h3>
+          <pre><code>import math
+math.gcd(12, 18)      # 6，最大公约数
+math.isqrt(10)        # 3，整数平方根
+math.comb(5, 2)       # 10，组合数 C(5, 2)
+math.factorial(5)     # 120
+math.ceil(7 / 2)      # 4；整数也可写 (a + b - 1) // b
+math.inf              # 同 float("inf")</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>多重赋值</h3>
+          <pre><code>a, b = b, a                         # 交换
+nums[i], nums[j] = nums[j], nums[i]
+lo, hi = 0, len(nums) - 1
+x = y = 0
+first, *rest = [1, 2, 3]            # 1, [2, 3]</code></pre>
+          <p class="note">右边先全部算完，再依次赋给左边，所以交换不需要临时变量。</p>
+        </article>
+        <article class="recipe">
+          <h3>itertools</h3>
+          <pre><code>from itertools import (permutations, combinations,
+                       product, accumulate)
+list(permutations([1, 2, 3]))      # 全排列，6 个
+list(combinations([1, 2, 3], 2))   # [(1, 2), (1, 3), (2, 3)]
+list(product("ab", repeat=2))      # aa ab ba bb
+list(accumulate([1, 2, 3]))        # 前缀和 [1, 3, 6]
+list(accumulate(nums, initial=0))  # 以 0 开头的前缀和</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>记忆化搜索：@cache <span class="lc">LC 70 爬楼梯</span></h3>
+          <pre><code>from functools import cache
+
+@cache                    # 自动缓存 参数 → 结果
+def climb(n):
+    if n &lt;= 2:
+        return n
+    return climb(n - 1) + climb(n - 2)</code></pre>
+          <p class="note">在 LeetCode 里把被缓存的函数定义在方法内部。参数必须可哈希，list 要先转 tuple。旧版本 Python 用 <code>@lru_cache(None)</code>。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= templates ================= -->
+    <section class="ds" id="templates">
+      <div class="ds-head">
+        <h2><span class="ds-name">解题模板</span><span class="ds-cn">二叉树 · 链表 · 单调栈 · 回溯 · 前缀和 · 滑窗</span></h2>
+        <p class="ds-use">把上面的数据结构组合起来，就是这些高频套路。BFS 和单调队列在 deque 一节，二分在 bisect 一节。</p>
+      </div>
+      <div class="recipes">
+        <article class="recipe">
+          <h3>二叉树递归 <span class="lc">LC 104 二叉树的最大深度</span></h3>
+          <pre><code>def maxDepth(self, root):
+    if not root:              # 先处理空节点
+        return 0
+    return 1 + max(self.maxDepth(root.left),
+                   self.maxDepth(root.right))</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>递归里更新全局答案 <span class="lc">LC 543 二叉树的直径</span></h3>
+          <pre><code>def diameterOfBinaryTree(self, root):
+    ans = 0
+    def depth(node):
+        nonlocal ans          # 要修改外层变量
+        if not node:
+            return 0
+        l, r = depth(node.left), depth(node.right)
+        ans = max(ans, l + r)
+        return 1 + max(l, r)
+    depth(root)
+    return ans</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>链表：哑节点 <span class="lc">LC 21 合并两个有序链表</span></h3>
+          <pre><code>dummy = tail = ListNode()     # 省去单独处理头节点
+while l1 and l2:
+    if l1.val &lt; l2.val:
+        tail.next, l1 = l1, l1.next
+    else:
+        tail.next, l2 = l2, l2.next
+    tail = tail.next
+tail.next = l1 or l2          # 接上剩下的
+return dummy.next</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>反转链表 <span class="lc">LC 206 反转链表</span></h3>
+          <pre><code>prev, cur = None, head
+while cur:
+    nxt = cur.next        # 先记住下一个
+    cur.next = prev       # 掉头
+    prev, cur = cur, nxt
+return prev</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>单调栈 <span class="lc">LC 739 每日温度</span></h3>
+          <pre><code>ans = [0] * len(t)
+stack = []                    # 存下标，温度从大到小
+for i, x in enumerate(t):
+    while stack and t[stack[-1]] &lt; x:
+        j = stack.pop()       # j 等到了更高的温度
+        ans[j] = i - j
+    stack.append(i)
+return ans</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>回溯 <span class="lc">LC 78 子集</span></h3>
+          <pre><code>res, path = [], []
+def backtrack(start):
+    res.append(path[:])       # 存拷贝，不能存 path 本身
+    for i in range(start, len(nums)):
+        path.append(nums[i])  # 做选择
+        backtrack(i + 1)
+        path.pop()            # 撤销选择
+backtrack(0)
+return res</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>前缀和 + 哈希表 <span class="lc">LC 560 和为 K 的子数组</span></h3>
+          <pre><code>cnt = {0: 1}                  # 前缀和 → 出现次数
+pre = ans = 0
+for x in nums:
+    pre += x
+    ans += cnt.get(pre - k, 0)
+    cnt[pre] = cnt.get(pre, 0) + 1
+return ans</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>滑动窗口 <span class="lc">LC 3 无重复字符的最长子串</span></h3>
+          <pre><code>last = {}                     # 字符 → 最近一次的下标
+left = best = 0
+for right, c in enumerate(s):
+    if c in last and last[c] &gt;= left:
+        left = last[c] + 1    # 左边界跳过重复字符
+    last[c] = right
+    best = max(best, right - left + 1)
+return best</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= pitfalls ================= -->
+    <section class="ds" id="pitfalls">
+      <div class="ds-head">
+        <h2><span class="ds-name">常见坑</span><span class="ds-cn">Python 特有的易错点</span></h2>
+        <p class="ds-use">代码逻辑没问题却 WA 或报错时，对照着排查。</p>
+      </div>
+      <div class="recipes pits">
+        <article class="recipe">
+          <h3>二维数组的行共用一个对象</h3>
+          <div class="verdict bad">✗ 错误</div>
+          <pre class="bad"><code>grid = [[0] * n] * m
+grid[0][0] = 1      # 每一行的第 0 个都变成 1</code></pre>
+          <div class="verdict good">✓ 正确</div>
+          <pre class="good"><code>grid = [[0] * n for _ in range(m)]</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>sort() 返回的是 None</h3>
+          <div class="verdict bad">✗ 错误</div>
+          <pre class="bad"><code>a = a.sort()        # a 变成了 None</code></pre>
+          <div class="verdict good">✓ 正确</div>
+          <pre class="good"><code>a.sort()            # 原地排序
+b = sorted(a)       # 或者要一个新列表</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>回溯时存了引用</h3>
+          <div class="verdict bad">✗ 错误</div>
+          <pre class="bad"><code>res.append(path)    # 最后 res 里全是同一个空列表</code></pre>
+          <div class="verdict good">✓ 正确</div>
+          <pre class="good"><code>res.append(path[:])     # 或 list(path)</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>内层函数改外层变量</h3>
+          <div class="verdict bad">✗ 错误</div>
+          <pre class="bad"><code>count = 0
+def dfs(node):
+    count += 1      # UnboundLocalError</code></pre>
+          <div class="verdict good">✓ 正确</div>
+          <pre class="good"><code>count = 0
+def dfs(node):
+    nonlocal count
+    count += 1</code></pre>
+          <p class="note">只读外层变量、或者修改 list / dict 的内容，都不需要 <code>nonlocal</code>；只有重新赋值时需要。</p>
+        </article>
+        <article class="recipe">
+          <h3>类里递归忘了 self</h3>
+          <div class="verdict bad">✗ 错误</div>
+          <pre class="bad"><code>return maxDepth(root.left)    # NameError</code></pre>
+          <div class="verdict good">✓ 正确</div>
+          <pre class="good"><code>return self.maxDepth(root.left)</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>负数整除向下取整</h3>
+          <div class="verdict bad">✗ 想要 -3</div>
+          <pre class="bad"><code>-7 // 2         # 得到 -4
+-7 % 2          # 得到 1，不是 -1</code></pre>
+          <div class="verdict good">✓ 向零取整</div>
+          <pre class="good"><code>int(-7 / 2)     # -3</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>{} 是空字典</h3>
+          <div class="verdict bad">✗ 错误</div>
+          <pre class="bad"><code>seen = {}
+seen.add(1)     # AttributeError: dict 没有 add</code></pre>
+          <div class="verdict good">✓ 正确</div>
+          <pre class="good"><code>seen = set()</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>值为 0 被当成“不存在”</h3>
+          <div class="verdict bad">✗ 错误</div>
+          <pre class="bad"><code>if d.get(k):        # 值是 0 时也进不来
+if not node.val:    # 节点值为 0 时也成立</code></pre>
+          <div class="verdict good">✓ 正确</div>
+          <pre class="good"><code>if k in d:
+if node is None:</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>遍历列表时删除元素</h3>
+          <div class="verdict bad">✗ 错误</div>
+          <pre class="bad"><code>for x in a:
+    if x == 0:
+        a.remove(x)     # 会跳过某些元素</code></pre>
+          <div class="verdict good">✓ 正确</div>
+          <pre class="good"><code>a = [x for x in a if x != 0]</code></pre>
+        </article>
+        <article class="recipe">
+          <h3>可变对象当默认参数</h3>
+          <div class="verdict bad">✗ 错误</div>
+          <pre class="bad"><code>def f(path=[]):     # 所有调用共用这一个列表
+    ...</code></pre>
+          <div class="verdict good">✓ 正确</div>
+          <pre class="good"><code>def f(path=None):
+    if path is None:
+        path = []</code></pre>
+        </article>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+  // ---- 轻量 Python 语法高亮 ----
+  const KW = new Set("False None True and as assert break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield".split(" "));
+  const BI = new Set("len range print sorted reversed enumerate zip sum min max abs list dict set tuple str int float bool any all map filter ord chr divmod pow bin hash iter next isinstance frozenset deque Counter defaultdict heapq bisect math string self ListNode TreeNode".split(" "));
+  const RE = /(#[^\n]*)|([fbr]?"(?:[^"\\\n]|\\.)*"|[fbr]?'(?:[^'\\\n]|\\.)*')|(@[A-Za-z_]\w*)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)/g;
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  function hl(src) {
+    let out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(src))) {
+      out += esc(src.slice(last, m.index));
+      const t = m[0];
+      let cls = null;
+      if (m[1]) cls = "c";
+      else if (m[2]) cls = "s";
+      else if (m[3]) cls = "k";
+      else if (m[4]) cls = "n";
+      else if (KW.has(t)) cls = "k";
+      else if (src[m.index - 1] === ".") cls = "m";
+      else if (BI.has(t)) cls = "b";
+      out += cls ? `<span class="t-${cls}">${esc(t)}</span>` : esc(t);
+      last = RE.lastIndex;
+    }
+    return out + esc(src.slice(last));
+  }
+  document.querySelectorAll("pre code").forEach(el => { el.innerHTML = hl(el.textContent); });
+
+  // ---- 搜索过滤 ----
+  const input = document.getElementById("q");
+  const empty = document.getElementById("empty");
+  const sections = [...document.querySelectorAll("main > section")];
+  const links = new Map([...document.querySelectorAll(".toc a")].map(a => [a.getAttribute("href").slice(1), a]));
+
+  function filter() {
+    const term = input.value.trim().toLowerCase();
+    let shown = 0;
+    sections.forEach(sec => {
+      const recipes = sec.querySelectorAll(".recipe");
+      let any = false;
+      if (!recipes.length) {
+        any = !term;
+      } else {
+        const headHit = !!term && sec.querySelector("h2").textContent.toLowerCase().includes(term);
+        recipes.forEach(r => {
+          const hit = !term || headHit || r.textContent.toLowerCase().includes(term);
+          r.hidden = !hit;
+          if (hit) any = true;
+        });
+      }
+      sec.hidden = !any;
+      links.get(sec.id)?.classList.toggle("off", !any);
+      if (any && recipes.length) shown++;
+    });
+    empty.hidden = !term || shown > 0;
+    if (!empty.hidden) empty.textContent = `没有找到“${input.value.trim()}”。换个关键词试试，比如 append、Counter、popleft。`;
+  }
+  input.addEventListener("input", filter);
+  input.addEventListener("keydown", e => {
+    if (e.key === "Escape") { input.value = ""; filter(); input.blur(); }
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "/" && document.activeElement !== input && !e.metaKey && !e.ctrlKey) {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+
+  // ---- 目录高亮当前小节 ----
+  const toc = document.querySelector(".toc");
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      links.forEach(a => a.classList.remove("on"));
+      const a = links.get(e.target.id);
+      if (!a) return;
+      a.classList.add("on");
+      if (toc.scrollWidth > toc.clientWidth) {
+        toc.scrollTo({ left: a.offsetLeft - toc.clientWidth / 2 + a.offsetWidth / 2, behavior: "smooth" });
+      }
+    });
+  }, { rootMargin: "-25% 0px -65% 0px" });
+  sections.forEach(s => io.observe(s));
+})();
+</script>
+
+</html>
