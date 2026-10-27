@@ -270,13 +270,29 @@ a[:] = b           # 原地替换内容</code></pre>
         </article>
         <article class="recipe">
           <h3>排序</h3>
-          <pre><code>a.sort()                # 原地升序，返回 None
-a.sort(reverse=True)    # 原地降序
-b = sorted(a)           # 返回新列表，a 不变
-words.sort(key=len)     # 按长度排
-pairs.sort(key=lambda p: p[1])           # 按第 2 项
-pairs.sort(key=lambda p: (-p[0], p[1]))  # 先降后升</code></pre>
-          <p class="note">排序是稳定的：key 相同的元素保持原来的先后顺序。</p>
+          <pre><code># 原地升序 / 降序，返回值是 None
+a = [3, 1, 2]
+a.sort()                  # a → [1, 2, 3]
+a.sort(reverse=True)      # a → [3, 2, 1]
+
+# sorted 返回新列表，原列表不变
+a = [3, 1, 2]
+b = sorted(a)             # b → [1, 2, 3]，a 还是 [3, 1, 2]
+
+# 按长度排（长度相同的保持原顺序）
+words = ["bb", "a", "cc", "d"]
+words.sort(key=len)       # → ['a', 'd', 'bb', 'cc']
+
+# 按第 2 项升序
+pairs = [[1, 3], [2, 1], [3, 2]]
+pairs.sort(key=lambda p: p[1])
+# → [[2, 1], [3, 2], [1, 3]]
+
+# 第 1 项降序，相同时第 2 项升序
+pairs = [[1, 2], [3, 1], [3, 0], [1, 1]]
+pairs.sort(key=lambda p: (-p[0], p[1]))
+# → [[3, 0], [3, 1], [1, 1], [1, 2]]</code></pre>
+          <p class="note">排序是稳定的：key 相同的元素保持原来的先后顺序。上面按长度排时，<code>'a'</code> 在 <code>'d'</code> 前面、<code>'bb'</code> 在 <code>'cc'</code> 前面，就是这个原因。</p>
         </article>
         <article class="recipe">
           <h3>遍历</h3>
