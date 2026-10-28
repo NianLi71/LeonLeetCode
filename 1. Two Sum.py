@@ -1,16 +1,8 @@
 from typing import List
 
 '''
-Runtime
-1714
-ms
-Beats
-29.43%
-Memory
-19.70
-MB
-Beats
-81.55%
+思路一
+O(n^2)遍历枚举
 '''
 class Solution1:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
